@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elections</title>
+  <link rel="stylesheet" type="text/css" href="/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</head>
+<body id="app">
+  <div class="header">
+    <h1>Total Votes</h1>
+    <p><%= parties.total_votes %> votes</p>
+  </div>
+  <div class="parties">
+    <% Object.keys(parties).forEach(partyName => { %>
+      <% if (partyName !== 'id' && partyName !== 'total_votes') { %>
+        <div class="party">
+          <h2><%= partyName %></h2>
+         
+          <form method="POST" action="/vote">
+            <input type="hidden" name="partyName" value="<%= partyName %>">
+            <button type="submit" class="btn btn-success">Vote</button>
+          </form>
+        </div>
+      <% } %>
+    <% }); %>
+  </div>
+
+  <!-- Add a "Show Results" button at the bottom to trigger the pop-up -->
+  <div class="text-center">
+    <button id="showResult" class="btn btn-primary mt-3">Show Results</button>
+  </div>
+
+  <!-- Modal for displaying election results -->
+  <div class="modal fade" id="resultsModal" tabindex="-1" role="dialog" aria-labelledby="resultsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="resultsModalLabel">Election Results</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <% Object.keys(parties).forEach(partyName => { %>
+            <% if (partyName !== 'id' && partyName !== 'total_votes') { %>
+              <p><%= partyName %> received <%= parties[partyName] %> votes</p>
+            <% } %>
+          <% }); %>
+          <p>Total Votes: <%= parties.total_votes %> votes</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript to show the results modal -->
+  <script>
+    document.getElementById('showResult').addEventListener('click', function() {
+      $('#resultsModal').modal('show');
+    });
+  </script>
+</body>
+</html>
+
